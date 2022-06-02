@@ -199,9 +199,35 @@ public interface UserDetails extends Serializable {
     boolean isEnabled();
 }
 ```
-
 ### UserDetailsService
+
+UserDetailsService 인터페이스는 UserDetails 객체를 반환하는 하나의 메소드만을 가지고 있다.
+
+일반적으로 이를 구현한 클래스의 내부에 UserRepository 를 주입받아 DB 와 연결하여 처리한다.
+
+```java
+// UserDetailsService
+public interface UserDetailsService {
+		UserDetails loadUserByUsername(String var1) throws UsernameNotFoundException;
+}
+```
 
 ### PasswordEncoding
 
+AuthenticationManagerBuilder.userDetailsService().passwordEncoder() 를 통해 패스워드 암호화에 사용될 PasswordEncoder 구현체를 지정할 수 있다.
+
+```java
+@Override
+protected void configure(AuthenticationMangerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+}
+
+@Bean
+public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+}
+```
+
 ### GrantedAuthority
+
+현재 사용자(principal) 가 가지고 있는 권한을 의미한다. ROLE_ADMIN 이나 ROLE_USER 와 같이 ROLE_* 의 형태로 사용하며, 보통 ‘roles’ 라고 한다. GrantedAuthority 객체는 UserDetailsService 에 의해 불러올 수 있고 특정 자원에 대한 권한이 있는지를 검사하여 접근 허용 여부를 결정한다.
