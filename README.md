@@ -2,6 +2,15 @@
 스프링 시큐리티의 작동방식과 모듈에 대한 공부를 저장하는 저장소
 
 ---
+### 자료 [참고]
+- [Spring Security 공식 문서](https://docs.spring.io/spring-security/reference/index.html)
+- [망나니개발자 - 5.7 이전](https://mangkyu.tistory.com/76?category=761302)
+- [hou27블로그 security 적용하기 - 5.7 이전](https://hou27.tistory.com/entry/Spring-Boot-Spring-Security-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-%EC%95%94%ED%98%B8%ED%99%94)
+- [hou27블로그 session 인증 5.7 이후](https://hou27.tistory.com/entry/Spring-Security-%EC%84%B8%EC%85%98-%EC%9D%B8%EC%A6%9D)
+- [hou27블로그 jwt 5.7 이후](https://hou27.tistory.com/entry/Spring-Security-JWT)
+
+---
+
 ## Spring Security ?
 애플리케이션은 보안에 관한 인증(Authentication)과 인가(Authorization) 에 대한 처리를 해주어야 한다. Spring 에서는 Spring Security 라는 별도의 프레임워크에서 관련된 기능을 제공하고 있다.
 **Spring 기반의 애플리케이션의 보안(인증과 권한, 인가 등)을 담당하는 스프링 하위 프레임 워크**이다.  `Spring Security` 는 `‘인증’`과 `‘권한’`에 대한 부분을 Filter 흐름에 따라 처리하고 있다. `Filter` 는 `Dispatcher Servlet` 으로 가기 전에 적용되므로 가장 먼저 URL 요청을 받지만, `Interceptor`는 `Dispatcher` 와 `Controller` 사이에 위치한다는 점에서 적용 시기의 차이가 있다. `Spring Security` 는 보안과 관련해서 체계적으로 많은 옵션을 제공해주기 때문에 개발자 입장에서는 일일이 보안관련 로직을 작성하지 않아도 된다는 장점이 있다.
@@ -163,6 +172,9 @@ public class ProviderManager
 앞서 `ProviderManager` 에 직접 구현한 `CustomAuthenticationProvider` 를 등록하는 방법은 `WebSecurityConfigurerAdapter` 를 상속해 만든 `SecurityConfig` 에서 할 수 있다. `WebSecurityConfigurerAdapter` 의 상위 클래스에서는 `AuthenticationManager` 를 가지고 있기 때문에 직접 만든 `CustomAuthenticationProvider` 를 등록할 수 있게 된다.
 
 ```java
+/**
+ *  WebSecurityConfigurerAdapter 는 Security 5.7.1 부터 Deprecated 되었다
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
