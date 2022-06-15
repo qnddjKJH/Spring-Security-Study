@@ -1,4 +1,4 @@
-package com.study.mysecurity.domain.user.service;
+package com.study.mysecurity.config.security;
 
 import com.study.mysecurity.domain.user.User;
 import com.study.mysecurity.domain.user.repository.UserRepository;

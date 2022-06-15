@@ -1,7 +1,6 @@
-package com.study.mysecurity.config;
+package com.study.mysecurity.config.security;
 
 import com.study.mysecurity.domain.user.repository.UserRepository;
-import com.study.mysecurity.domain.user.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,16 +35,16 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .formLogin()
-                .loginPage("login")
+                .loginPage("/users/signIn")
                 .successForwardUrl("/")
-                .failureForwardUrl("/login")
+                .failureForwardUrl("/users/signIn")
                 .usernameParameter("email")
                 .passwordParameter("password");
 
         http
                 .authorizeRequests()
-                .antMatchers("/", "/signUp")
-                .permitAll()
+                    .antMatchers("/", "/users/signIn", "/users/signUp")
+                    .permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
