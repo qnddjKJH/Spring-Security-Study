@@ -1,14 +1,12 @@
-package com.study.mysecurity.config;
+package com.study.mysecurity.config.security;
 
-import com.study.mysecurity.domain.user.UserDetailsServiceImpl;
+import com.study.mysecurity.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -17,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     /**
      * 사용할 PasswordEncoder 를 Bean 으로 등록
@@ -29,7 +27,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
+        return new UserDetailsServiceImpl(userRepository);
     }
 
     @Bean
@@ -37,16 +35,16 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .formLogin()
-                .loginPage("login")
+                .loginPage("/users/signIn")
                 .successForwardUrl("/")
-                .failureForwardUrl("/login")
+                .failureForwardUrl("/users/signIn")
                 .usernameParameter("email")
                 .passwordParameter("password");
 
         http
                 .authorizeRequests()
-                .antMatchers("/", "/signUp")
-                .permitAll()
+                    .antMatchers("/", "/users/signIn", "/users/signUp")
+                    .permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
