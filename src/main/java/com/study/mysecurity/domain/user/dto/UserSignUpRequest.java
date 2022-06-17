@@ -1,5 +1,6 @@
 package com.study.mysecurity.domain.user.dto;
 
+import com.study.mysecurity.domain.user.Role;
 import com.study.mysecurity.domain.user.User;
 import com.sun.istack.NotNull;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class UserSignUpRequest {
                 .email(email)
                 .password(password)
                 .name(name)
+                .role(Role.USER)
                 .build();
     }
 }

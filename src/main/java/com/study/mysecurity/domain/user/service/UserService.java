@@ -4,6 +4,9 @@ import com.study.mysecurity.domain.user.User;
 import com.study.mysecurity.domain.user.dto.UserSignUpRequest;
 import com.study.mysecurity.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +17,19 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("해당 유저를 찾지 못하였습니다."));
+
+        return user;
+    }
 
     /**
      * 가입
@@ -59,13 +71,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
     private boolean isEmailExist(String email) {
         Optional<User> byEmail = userRepository.findByEmail(email);
         return !byEmail.isEmpty();
     }
-
-
-
-
 }

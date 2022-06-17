@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -16,8 +18,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/")
-    public String userList() {
+    @GetMapping
+    public String userList(Model model) {
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
         return "user/userList";
     }
 
@@ -35,17 +39,17 @@ public class UserController {
 
     @PostMapping("/signIn")
     public String postSignIn() throws Exception {
-        return "redirect:/user/signIn";
+        return "redirect:/";
     }
 
     @GetMapping("/signUp")
     public String signUp() {
-        return "signUp";
+        return "user/signUp";
     }
 
     @PostMapping("/signUp")
-    public String postSignUp(@Validated UserSignUpRequest request) throws Exception {
+    public String postSignUp(@ModelAttribute @Validated UserSignUpRequest request) throws Exception {
         User user = userService.signUp(request);
-        return "redirect:/user/signIn";
+        return "redirect:/users/signIn";
     }
 }

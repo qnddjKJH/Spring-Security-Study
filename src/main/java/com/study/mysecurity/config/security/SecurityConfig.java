@@ -1,12 +1,12 @@
 package com.study.mysecurity.config.security;
 
-import com.study.mysecurity.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,9 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final UserRepository userRepository;
-
     /**
      * 사용할 PasswordEncoder 를 Bean 으로 등록
      */
@@ -26,26 +23,28 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl(userRepository);
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .formLogin()
-                .loginPage("/users/signIn")
-                .successForwardUrl("/")
-                .failureForwardUrl("/users/signIn")
-                .usernameParameter("email")
-                .passwordParameter("password");
-
-        http
                 .authorizeRequests()
-                    .antMatchers("/", "/users/signIn", "/users/signUp")
-                    .permitAll()
-                .anyRequest().authenticated();
+                    .antMatchers("/", "/users/signIn", "/users/signUp").permitAll()
+                    .antMatchers("/admin").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                    .loginPage("/users/signIn")
+                    .usernameParameter("email")
+                    .passwordParameter("password")
+                    .successForwardUrl("/users/signIn")
+                    .failureForwardUrl("/users/signIn");
+
         return http.build();
     }
 
