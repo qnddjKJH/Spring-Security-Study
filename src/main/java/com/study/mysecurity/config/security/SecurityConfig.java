@@ -43,7 +43,12 @@ public class SecurityConfig {
                     .usernameParameter("email")
                     .passwordParameter("password")
                     .successForwardUrl("/users/signIn")
-                    .failureForwardUrl("/users/signIn");
+                    .failureForwardUrl("/users/signIn")
+            .and()
+                .logout()
+                .logoutUrl("/users/logout")
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/");
 
         return http.build();
     }

@@ -1,13 +1,18 @@
 package com.study.mysecurity.domain.user.conroller;
 
 import com.study.mysecurity.domain.user.User;
+import com.study.mysecurity.domain.user.dto.UserDetailResponse;
 import com.study.mysecurity.domain.user.dto.UserSignUpRequest;
 import com.study.mysecurity.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -25,10 +30,10 @@ public class UserController {
         return "user/userList";
     }
 
-    @GetMapping("/{email}")
-    public String profile(@PathVariable String email, Model model) {
-        userService.findUser(email);
-
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal User user, Model model) {
+        UserDetailResponse userDetailResponse = new UserDetailResponse(user.getEmail(), user.getName());
+        model.addAttribute("userDetail", userDetailResponse);
         return "user/profile";
     }
 
