@@ -1,6 +1,7 @@
 package com.study.mysecurity.domain.user.service;
 
 import com.study.mysecurity.domain.user.User;
+import com.study.mysecurity.domain.user.UserDetailsAdapter;
 import com.study.mysecurity.domain.user.dto.UserSignUpRequest;
 import com.study.mysecurity.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class UserService implements UserDetailsService {
 
         User user = optionalUser.orElseThrow(() -> new RuntimeException("해당 유저를 찾지 못하였습니다."));
 
-        return user;
+        return new UserDetailsAdapter(user);
     }
 
     /**

@@ -15,6 +15,7 @@ import java.util.Collection;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class User implements UserDetails {
 
     @Id
